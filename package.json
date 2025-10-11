@@ -4,8 +4,8 @@
   "description": "Challenge 4: Non-Relational Databases for Storing JSON Data",
   "main": "index.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
     "generate-data": "node scripts/generateData.js",
     "import-data": "node scripts/importData.js",
     "create-indexes": "node scripts/createIndexes.js",
