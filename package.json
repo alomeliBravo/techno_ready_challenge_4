@@ -1,0 +1,37 @@
+{
+  "name": "techno_ready_challenge_4",
+  "version": "1.0.0",
+  "description": "Challenge 4: Non-Relational Databases for Storing JSON Data",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "generate-data": "node scripts/generateData.js",
+    "import-data": "node scripts/importData.js",
+    "create-indexes": "node scripts/createIndexes.js",
+    "backup": "node scripts/backup.js",
+    "setup": "npm run generate-data && npm run import-data && npm run create-indexes",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alomeliBravo/techno_ready_challenge_4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/alomeliBravo/techno_ready_challenge_4/issues"
+  },
+  "homepage": "https://github.com/alomeliBravo/techno_ready_challenge_4#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongodb": "^6.20.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
