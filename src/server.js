@@ -1,72 +1,111 @@
+/**
+ * Tattler Restaurant Directory API Server
+ * Version: 1.1.0
+ */
+
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const database = require('./config/database');
+const routes = require('./routes');
+const { errorHandler, notFoundHandler, requestLogger } = require('./middlewares');
+const { PORT, NODE_ENV } = require('./config/environment');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ==========================================
+// MIDDLEWARES
+// ==========================================
 
-// Request logging middleware
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(requestLogger);
+
+// Security headers
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
     next();
 });
 
-// Health check endpoint
+// ==========================================
+// ROUTES
+// ==========================================
+
 app.get('/health', (req, res) => {
     res.json({
-        status: 'OK',
+        success: true,
+        message: 'Server is running',
         timestamp: new Date().toISOString(),
-        service: 'Tattler Restaurant Directory API'
+        environment: NODE_ENV
     });
 });
 
-// API Routes - Will be implemented in Sprint 2
-// app.use('/api/restaurants', require('./routes/restaurants'));
-
-// Root endpoint
 app.get('/', (req, res) => {
     res.json({
+        success: true,
         message: 'Welcome to Tattler Restaurant Directory API',
-        version: '1.0.0',
+        version: '1.1.0',
+        documentation: '/api/v1',
         endpoints: {
             health: '/health',
-            restaurants: '/api/restaurants (Coming in Sprint 2)'
+            api: '/api/v1'
         }
     });
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({
-        error: 'Endpoint not found',
-        path: req.path
-    });
-});
+app.use('/api/v1', routes);
 
-// Error handler
-app.use((err, req, res, next) => {
-    console.error('Error:', err);
-    res.status(500).json({
-        error: 'Internal server error',
-        message: err.message
-    });
-});
+// ==========================================
+// ERROR HANDLING
+// ==========================================
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-Tattler Restaurant Directory API
-Server running on port ${PORT}
-Environment: ${process.env.NODE_ENV || 'development'}
-http://localhost:${PORT}
+// ==========================================
+// SERVER INITIALIZATION
+// ==========================================
 
-  `);
-});
+async function startServer() {
+    try {
+        // Connect to database
+        await database.connect();
+
+        // Start server
+        const server = app.listen(PORT, () => {
+            console.log(`Tattler API v1.1.0 running on http://localhost:${PORT} [${NODE_ENV}]`);
+        });
+
+        // Graceful shutdown
+        const shutdown = async (signal) => {
+            console.log(`\n${signal} received, closing server...`);
+            server.close(async () => {
+                await database.close();
+                process.exit(0);
+            });
+            setTimeout(() => process.exit(1), 10000);
+        };
+
+        process.on('SIGTERM', () => shutdown('SIGTERM'));
+        process.on('SIGINT', () => shutdown('SIGINT'));
+        process.on('uncaughtException', (error) => {
+            console.error('Uncaught Exception:', error);
+            process.exit(1);
+        });
+        process.on('unhandledRejection', (error) => {
+            console.error('Unhandled Rejection:', error);
+            server.close(() => process.exit(1));
+        });
+
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+}
+
+startServer();
 
 module.exports = app;
