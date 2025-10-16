@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "9004dc8e-1ddc-4ddb-8b58-f5dc10b4b84d",
+		"name": "Tattler Restaurant Directory API",
+		"description": "Complete collection for Tattler API v1.2.0 - All 14 endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "40342251"
+	},
+	"item": [
+		{
+			"name": "CRUD Operations",
+			"item": [
+				{
+					"name": "1. Get All Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get all restaurants with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get Restaurant by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/restaurants/68e9dd04197551149c154274",
+						"description": "Get a specific restaurant by MongoDB ObjectId"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get by Restaurant ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/restaurants/restaurant-id/1006",
+						"description": "Get restaurant by restaurant_id (numeric)"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Create Restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Tacos Angel Lomeli\",\n  \"cuisine\": \"Mexican\",\n  \"borough\": \"Guadalajara\",\n  \"address\": {\n    \"building\": \"789\",\n    \"street\": \"Avenida México\",\n    \"zipcode\": \"44100\",\n    \"coord\": [-103.3496, 20.6597]\n  }\n}"
+						},
+						"url": "{{baseUrl}}/restaurants",
+						"description": "Create a new restaurant"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Update Restaurant (Full)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"La Taquería Actualizada\",\n  \"cuisine\": \"Italian\",\n  \"borough\": \"Zapopan\",\n  \"address\": {\n    \"building\": \"234\",\n    \"street\": \"Avenida Patria\",\n    \"zipcode\": \"45010\",\n    \"coord\": [-103.3496, 20.6597]\n  }\n}"
+						},
+						"url": "{{baseUrl}}/restaurants/68f1625a01e5de73d2b7e26d",
+						"description": "Full update - requires all fields"
+					},
+					"response": []
+				},
+				{
+					"name": "6. Update Restaurant (Partial)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"La Taquería Premium\",\n  \"cuisine\": \"Mexican Fusion\"\n}"
+						},
+						"url": "{{baseUrl}}/restaurants/68e9dd04197551149c154274",
+						"description": "Partial update - only sends changed fields"
+					},
+					"response": []
+				},
+				{
+					"name": "7. Delete Restaurant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/restaurants/68e9dd04197551149c154274",
+						"description": "Delete a restaurant"
+					},
+					"response": []
+				},
+				{
+					"name": "8. Get Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/restaurants/stats",
+						"description": "Get basic statistics about restaurants"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search & Filtering",
+			"item": [
+				{
+					"name": "9. Search by Text",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/search?q=la taquería actualizada&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "la taquería actualizada"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Search restaurants by name or cuisine (case-insensitive)"
+					},
+					"response": []
+				},
+				{
+					"name": "10. Filter by Cuisine",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/by-cuisine?cuisine=Italian&sort=name&order=desc&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"by-cuisine"
+							],
+							"query": [
+								{
+									"key": "cuisine",
+									"value": "Italian"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "desc"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Filter restaurants by cuisine type with sorting"
+					},
+					"response": []
+				},
+				{
+					"name": "11. Filter by Borough",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/by-borough?borough=Zapopan&sort=name&order=asc&page=1&limit=15",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"by-borough"
+							],
+							"query": [
+								{
+									"key": "borough",
+									"value": "Zapopan"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "15"
+								}
+							]
+						},
+						"description": "Filter restaurants by borough/location"
+					},
+					"response": []
+				},
+				{
+					"name": "12. Filter Combined (Cuisine + Borough)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/filter?cuisine=Mexican&borough=Zapopan&sort=name&order=asc&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "cuisine",
+									"value": "Mexican"
+								},
+								{
+									"key": "borough",
+									"value": "Zapopan"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Filter by cuisine AND borough combined"
+					},
+					"response": []
+				},
+				{
+					"name": "13. Filter by Rating Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/by-rating?minScore=10&maxScore=30&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"by-rating"
+							],
+							"query": [
+								{
+									"key": "minScore",
+									"value": "10"
+								},
+								{
+									"key": "maxScore",
+									"value": "30"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Filter restaurants by average rating range"
+					},
+					"response": []
+				},
+				{
+					"name": "14. Find Nearby Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/nearby?lng=-103.3496&lat=20.6597&radius=1800&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"nearby"
+							],
+							"query": [
+								{
+									"key": "lng",
+									"value": "-103.3496"
+								},
+								{
+									"key": "lat",
+									"value": "20.6597"
+								},
+								{
+									"key": "radius",
+									"value": "1800"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Find nearby restaurants using geospatial search (coordinates + radius in meters)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api/v1",
+			"type": "string"
+		}
+	]
+}
