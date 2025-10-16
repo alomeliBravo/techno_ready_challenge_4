@@ -1,6 +1,6 @@
 /**
  * Restaurant Controller
- * Version: 1.1.0
+ * Version: 1.2.0
  * 
  * Controlador para manejo de requests HTTP de restaurantes.
  * Maneja request/response y delega lógica al service.
@@ -19,6 +19,109 @@ class RestaurantController {
             const { page = 1, limit = 20 } = req.query;
 
             const result = await restaurantService.getAllRestaurants(page, limit);
+
+            res.json(ApiResponse.paginated(result.data, result.pagination));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * GET /api/v1/restaurants/search
+     * Busca restaurantes por texto
+     */
+    async search(req, res, next) {
+        try {
+            const { q, page = 1, limit = 20 } = req.query;
+
+            const result = await restaurantService.searchRestaurants(q, page, limit);
+
+            res.json(ApiResponse.paginated(result.data, result.pagination));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * GET /api/v1/restaurants/by-cuisine
+     * Filtra por tipo de cocina
+     */
+    async filterByCuisine(req, res, next) {
+        try {
+            const { cuisine, page = 1, limit = 20, sort = 'name', order = 'asc' } = req.query;
+
+            const result = await restaurantService.filterByCuisine(cuisine, page, limit, sort, order);
+
+            res.json(ApiResponse.paginated(result.data, result.pagination));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * GET /api/v1/restaurants/by-borough
+     * Filtra por municipio
+     */
+    async filterByBorough(req, res, next) {
+        try {
+            const { borough, page = 1, limit = 20, sort = 'name', order = 'asc' } = req.query;
+
+            const result = await restaurantService.filterByBorough(borough, page, limit, sort, order);
+
+            res.json(ApiResponse.paginated(result.data, result.pagination));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * GET /api/v1/restaurants/filter
+     * Filtra por cocina y municipio
+     */
+    async filter(req, res, next) {
+        try {
+            const { cuisine, borough, page = 1, limit = 20, sort = 'name', order = 'asc' } = req.query;
+
+            const result = await restaurantService.filterByCuisineAndBorough(
+                cuisine,
+                borough,
+                page,
+                limit,
+                sort,
+                order
+            );
+
+            res.json(ApiResponse.paginated(result.data, result.pagination));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * GET /api/v1/restaurants/by-rating
+     * Filtra por rango de scores promedio
+     */
+    async filterByRating(req, res, next) {
+        try {
+            const { minScore = 0, maxScore = 30, page = 1, limit = 20 } = req.query;
+
+            const result = await restaurantService.filterByAverageScore(minScore, maxScore, page, limit);
+
+            res.json(ApiResponse.paginated(result.data, result.pagination));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * GET /api/v1/restaurants/nearby
+     * Busca restaurantes cercanos
+     */
+    async nearby(req, res, next) {
+        try {
+            const { lng, lat, radius = 5000, page = 1, limit = 20 } = req.query;
+
+            const result = await restaurantService.findNearby(lng, lat, radius, page, limit);
 
             res.json(ApiResponse.paginated(result.data, result.pagination));
         } catch (error) {
@@ -133,7 +236,7 @@ class RestaurantController {
             const stats = await restaurantService.getStatistics();
 
             res.json(ApiResponse.success(stats, 'Statistics retrieved successfully'));
-        } catch (error) {   
+        } catch (error) {
             next(error);
         }
     }
